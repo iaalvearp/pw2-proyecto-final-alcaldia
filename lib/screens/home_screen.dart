@@ -124,56 +124,99 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildHero(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: <Color>[AppTheme.primaryBlue, Color(0xFF5B7197)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppTheme.cardRadius),
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 132),
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/guayaquil_hero.png'),
+            fit: BoxFit.cover,
+            alignment: Alignment.centerRight,
+          ),
         ),
-        borderRadius: BorderRadius.circular(AppTheme.cardRadius),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.16),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: const Icon(
-              Icons.location_city_outlined,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppConfig.appName,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    height: 1.18,
-                  ),
-                ),
-                const SizedBox(height: 7),
-                Text(
-                  'Consulta obras y procesos publicados en contratación abierta.',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.82),
-                    height: 1.35,
-                  ),
-                ),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: <Color>[
+                AppTheme.primaryBlue.withValues(alpha: 0.94),
+                AppTheme.primaryBlue.withValues(alpha: 0.72),
+                AppTheme.primaryBlue.withValues(alpha: 0.14),
+                Colors.transparent,
               ],
+              stops: const <double>[0, 0.38, 0.58, 0.72],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
             ),
           ),
-        ],
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final compact = constraints.maxWidth < 420;
+                final preferredTextWidth = compact
+                    ? constraints.maxWidth * 0.62
+                    : constraints.maxWidth * 0.58;
+                final availableTextWidth = compact
+                    ? constraints.maxWidth
+                    : constraints.maxWidth - 60;
+                final textWidth = preferredTextWidth < availableTextWidth
+                    ? preferredTextWidth
+                    : availableTextWidth;
+                final cityIcon = Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.16),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: const Icon(
+                    Icons.location_city_outlined,
+                    color: Colors.white,
+                  ),
+                );
+                final copy = ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: textWidth),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        AppConfig.appName,
+                        style: Theme.of(context).textTheme.titleLarge
+                            ?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              height: 1.18,
+                            ),
+                      ),
+                      const SizedBox(height: 7),
+                      Text(
+                        'Consulta obras y procesos publicados en contratación abierta.',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.82),
+                          height: 1.35,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (compact) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [cityIcon, const SizedBox(height: 12), copy],
+                  );
+                }
+
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [cityIcon, const SizedBox(width: 14), copy],
+                );
+              },
+            ),
+          ),
+        ),
       ),
     );
   }
